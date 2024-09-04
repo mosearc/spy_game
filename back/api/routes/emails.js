@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
 const nodemailer = require("nodemailer");
+const rateLimit = require('express-rate-limit');
 
 const Email = require('../models/email');
 const Word = require('../models/word');
@@ -15,7 +16,15 @@ function shuffleArray(array) {
     return array;
 }
 
-router.get('/', async (req, res) => {
+const limiter = rateLimit({
+    windowMs: 90 * 1000, // 1,5 minuti
+    max: 1, // massimo 1 richiesta
+    message: {
+        message: 'Troppo traffico! Prova di nuovo tra un minuto.'
+    }
+});
+
+router.get('/', limiter, async (req, res) => {
     try {
         // Create transporter for sending emails
         const transporter = nodemailer.createTransport({

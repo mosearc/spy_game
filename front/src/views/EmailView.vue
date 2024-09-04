@@ -107,7 +107,7 @@ export default {
   <p> ATTENZIONE: il gioco non funziona se è presente anche solo una mail che non appartiene ad alcun giocatore</p>
   <p> come prima cosa è consigliabile eliminare tutte le email per pulire il database (pulsante rosso), tutti i giocatori devono inserire la propria email per giocare, è possibile inserire tutte le email da un solo dispositivo</p>
   <p> non è possibile elimniare una sola mail dal database, in caso un giocatore smettesse di giocare è necessario eliminare tutte le email e reinserire quelle dei giocatori rimasti</p>
-  <p> ATTENZIONE: un SOLO giocatore deve premere il pulsante start per far partire il gioco altrimenti riceverete piu di una mail con messaggi differenti</p>
+
 
 
   <button class="delete" @click="handleDel">DELETE ALL EMAILS</button>
@@ -163,9 +163,11 @@ button{
 }
 .delete{
   background: firebrick;
+  margin-bottom: 10px;
 }
 .start{
   background: darkgreen;
+  margin-bottom: 10px;
 }
 
 </style>
