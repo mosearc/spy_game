@@ -53,7 +53,7 @@ export default {
           alert("Hai eliminato tutte le email");
 
           // Redirect to the homepage
-          await router.push('/');
+
         } catch (error) {
           console.error('Error:', error);
           alert('C\'è stato un problema durante l\'eliminazione delle email oppure non sono presenti mail nel database :)');
