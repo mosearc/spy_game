@@ -56,7 +56,7 @@ export default {
           await router.push('/');
         } catch (error) {
           console.error('Error:', error);
-          alert('C\'è stato un problema durante l\'eliminazione delle email');
+          alert('C\'è stato un problema durante l\'eliminazione delle email oppure non sono presenti mail nel database :)');
         }
         //submit()
       };
