@@ -1,6 +1,9 @@
 <template>
 
   <router-view/>
+  <footer>
+    <p>Made by @mosearc</p>
+  </footer>
 </template>
 
 <style>
@@ -23,5 +26,13 @@ nav a {
 
 nav a.router-link-exact-active {
   color: #42b983;
+}
+footer {
+  padding: 20px;
+  text-align: center;
+  width: 100%;
+  background-color: black;
+  color: white;
+  margin-top: auto;
 }
 </style>
