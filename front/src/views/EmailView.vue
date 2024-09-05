@@ -37,6 +37,14 @@ export default {
           }
         };
 
+        // const runSubmit = async () => {
+        //   await submit(); // Wait for submit to complete
+        //   console.log("bravo!");
+        //   alert("BRAVO!"); // This will only run after the submit() completes
+        // };
+        //
+        // runSubmit(); // Call the wrapper function to submit and wait
+
         submit(); // Call the async function to send the request
         console.log("bravo!")
         alert("BRAVO!");
