@@ -134,7 +134,7 @@ export default {
           <hr v-if="index !== contents.length - 1">
         </li>
       </ul>
-      <button class="players" @click="handleList">GET PLAYERS</button>
+      <button class="players" @click="handleList">PLAYER LIST</button>
     </div>
 
   </div>
