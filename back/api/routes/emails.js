@@ -24,7 +24,7 @@ const limiter = rateLimit({
     }
 });
 
-router.get('/', limiter, async (req, res) => {
+router.get('/send', limiter, async (req, res) => {
     try {
         // Create transporter for sending emails
         const transporter = nodemailer.createTransport({
@@ -85,6 +85,8 @@ router.get('/', limiter, async (req, res) => {
 });
 
 
+
+
 router.post('/', (req, res, next) => {
     const email = new Email({
         _id: new mongoose.Types.ObjectId(),
@@ -120,6 +122,26 @@ router.delete('/', (req, res, next) => {
             });
         });
 
+})
+
+router.get('/', async (req, res, next) => {
+    try{
+        const emails = await Email.find({}, 'name');
+        const emailArray = emails.map(email => email.name);
+        console.log(emailArray);
+        if(emailArray.length > 0) {
+            res.status(200).json(emailArray);
+        }else{
+            res.status(500).json({message: 'No emails found'});
+        }
+
+    }catch(err){
+        console.error(err);
+        res.status(500).json({
+            message: 'An error occurred',
+            error: err
+        });
+    }
 })
 
 module.exports = router
