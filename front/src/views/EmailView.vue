@@ -7,7 +7,7 @@ export default {
     return{
       email: '',
       contents: [],
-      // intervalId: null  // Per memorizzare l'ID dell'intervallo
+      intervalId: null  // Per memorizzare l'ID dell'intervallo
 
     }
   },
@@ -38,27 +38,58 @@ export default {
         };
 
         submit(); // Call the async function to send the request
-
+        console.log("bravo!")
         alert("BRAVO!");
       }
     },
 
     handleList(){
+
+      // const submit = async () => {
+      //
+      //   await axios.get(process.env.VUE_APP_BACK_PATH + "emails", {
+      //
+      //   }).then((res) => {
+      //     this.contents = res.data;
+      //     console.log(res.data)
+      //   }).catch((err)=>{
+      //     if (err.response.status !== 404)
+      //       //alert(err)
+      //       this.contents = []
+      //       console.log(err);
+      //   })
+      //
+      // }
+
       const submit = async () => {
+        try {
+          const response = await fetch(process.env.VUE_APP_BACK_PATH + "emails", {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          });
 
-        await axios.get(process.env.VUE_APP_BACK_PATH + "emails", {
+          if (!response.ok) {
+            // Handle non-404 errors
+            if (response.status !== 404) {
+              throw new Error(`Error: ${response.statusText}`);
+            }
+            this.contents = [];
+            console.log(`Error: ${response.statusText}`);
+          } else {
+            // Parse response as JSON
+            const data = await response.json();
+            this.contents = data;
+            console.log(data);
+          }
 
-        }).then((res) => {
-          this.contents = res.data;
-          console.log(res.data)
-        }).catch((err)=>{
-          if (err.response.status !== 404)
-            //alert(err)
-            this.contents = []
-            console.log(err);
-        })
-
-      }
+        } catch (err) {
+          // Log and handle errors here
+          console.error('Fetch error:', err);
+          this.contents = [];
+        }
+      };
 
       submit();
       console.log(this.contents);
@@ -116,36 +147,37 @@ export default {
       submit()
     },
 
-    // startPolling() {
-    //   this.handleList(); // Esegui subito la prima chiamata
-    //   this.intervalId = setInterval(() => {
-    //     this.handleList(); // Richiama la funzione ogni 30 secondi
-    //   }, 20000); // 20 secondi
-    // }
+    startPolling() {
+      this.handleList(); // Esegui subito la prima chiamata
+      this.intervalId = setInterval(() => {
+        this.handleList(); // Richiama la funzione ogni 30 secondi
+      }, 20000); // 20 secondi
+    }
 
   },
-  // mounted() {
-  //   this.startPolling(); // Avvia il polling quando il componente è montato
-  // },
-  // beforeDestroy() {
-  //   if (this.intervalId) {
-  //     clearInterval(this.intervalId); // Cancella l'intervallo quando il componente viene distrutto
-  //   }
-  // }
+  mounted() {
+    this.startPolling(); // Avvia il polling quando il componente è montato
+  },
+  beforeDestroy() {
+    if (this.intervalId) {
+      clearInterval(this.intervalId); // Cancella l'intervallo quando il componente viene distrutto
+    }
+  }
 }
 
 </script>
 
 <template>
   <div class="container">
-  <form class="my-form" @submit.prevent="handleSubmit(); handleList();">
-    <label>Email:</label>
-    <input  type="email" v-model="email">
+    <form class="my-form" @submit.prevent="handleSubmit(); handleList()">
+      <label>Email:</label>
+      <input type="email" v-model="email" />
 
-    <div class="submit">
-      <button>JOIN</button>
-    </div>
-  </form>
+      <div class="submit">
+        <button type="submit">JOIN</button>
+      </div>
+    </form>
+
 
     <div>
       <ul class="list-container">
@@ -225,6 +257,10 @@ button{
   color: black;
   border-radius: 20px;
 }
+button:hover{
+  background-color: #42b983;
+}
+
 .submit{
   text-align: center;
 }
@@ -286,14 +322,14 @@ button{
   display: block;
   margin: 20px auto;
   padding: 10px 20px;
-  background-color: #4CAF50;
-  color: white;
+  background-color: #90EE90;
+  color: black;
   border: none;
   cursor: pointer;
 }
 
 .players:hover {
-  background-color: #45a049;   /* Colore più scuro al passaggio del mouse */
+  background-color: #42b983;   /* Colore più scuro al passaggio del mouse */
 }
 
 
