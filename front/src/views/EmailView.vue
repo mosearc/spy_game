@@ -7,6 +7,7 @@ export default {
     return{
       email: '',
       contents: [],
+      // intervalId: null  // Per memorizzare l'ID dell'intervallo
 
     }
   },
@@ -41,6 +42,7 @@ export default {
         alert("BRAVO!");
       }
     },
+
     handleList(){
       const submit = async () => {
 
@@ -51,7 +53,9 @@ export default {
           console.log(res.data)
         }).catch((err)=>{
           if (err.response.status !== 404)
-            alert(err)
+            //alert(err)
+            this.contents = []
+            console.log(err);
         })
 
       }
@@ -80,7 +84,7 @@ export default {
 
         } catch (error) {
           console.error('Error:', error);
-          alert('C\'è stato un problema durante l\'eliminazione delle email oppure non sono presenti mail nel database :)');
+          //alert('C\'è stato un problema durante l\'eliminazione delle email oppure non sono presenti mail nel database :)');
         }
         //submit()
       };
@@ -110,9 +114,24 @@ export default {
         }
       };
       submit()
-    }
+    },
 
-  }
+    // startPolling() {
+    //   this.handleList(); // Esegui subito la prima chiamata
+    //   this.intervalId = setInterval(() => {
+    //     this.handleList(); // Richiama la funzione ogni 30 secondi
+    //   }, 20000); // 20 secondi
+    // }
+
+  },
+  // mounted() {
+  //   this.startPolling(); // Avvia il polling quando il componente è montato
+  // },
+  // beforeDestroy() {
+  //   if (this.intervalId) {
+  //     clearInterval(this.intervalId); // Cancella l'intervallo quando il componente viene distrutto
+  //   }
+  // }
 }
 
 </script>
