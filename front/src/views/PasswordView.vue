@@ -74,10 +74,10 @@ export default {
 
     <p> Tutti i giocatori riceveranno un messaggio via email con un luogo (e allora dovrete trovare chi è la spia)
       oppure con scritto "spy" (e allora dovrai trovare quale luogo è stato inviato agli altri)</p>
-    <p> Ogni giocatore (compresa la spia) a turno deve dire qualcosa in relazione al luogo che ha ricevuto, la spia non deve farsi scoprire e deve invece indovinare il lugo.
-      Gli altri giocatori devono capire chi è la spia in base alle risposte e devono stare attenti a non rivelare informazioni cruciali del lugo</p>
+    <p> Ogni giocatore (compresa la spia) a turno deve dire qualcosa in relazione al luogo che ha ricevuto, la spia non deve farsi scoprire e deve invece indovinare il luogo.
+      Gli altri giocatori devono capire chi è la spia in base alle risposte e devono stare attenti a non rivelare informazioni cruciali del luogo</p>
     <p> Quando qualcuno crede di avere le risposte puo dirlo quando vuole, con la consapevolezza che un errore porterà alla vittoria della "squadra" opposta</p>
-    <p>P.S. il caricamento iniziale a volte puo essere piuttosto lungo, grazie per la pazienza!</p>
+    <p>P.S. il caricamento iniziale a volte puo essere piuttosto lungo, grazie per la pazienza :)</p>
   </form>
 </template>
 

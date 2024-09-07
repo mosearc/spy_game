@@ -6,17 +6,21 @@ export default {
   data(){
     return{
       email: '',
+      code: '',
       contents: [],
-      intervalId: null  // Per memorizzare l'ID dell'intervallo
+      intervalId: null,  // Per memorizzare l'ID dell'intervallo
+      codeDisabled: false,
+      selectedOption: null
 
     }
   },
   methods:{
     handleSubmit(){
       console.log(this.email)
+      console.log(this.code)
       if (this.email) {
 
-        const data = { name: this.email }; // Define your data object
+        const data = { name: this.email, code: this.code }; // Define your data object
 
         const submit = async () => {
           try {
@@ -32,8 +36,12 @@ export default {
 
             const result = await response.json();
             console.log('Success:', result);
+            alert("BRAVO!");
+            this.codeDisabled = true
+            this.handleList()
           } catch (error) {
             console.error('There was a problem with your fetch operation:', error);
+            alert("NO! CODICE GIA IN USO");
           }
         };
 
@@ -45,9 +53,10 @@ export default {
         //
         // runSubmit(); // Call the wrapper function to submit and wait
 
+
         submit(); // Call the async function to send the request
         console.log("bravo!")
-        alert("BRAVO!");
+
       }
     },
 
@@ -71,7 +80,7 @@ export default {
 
       const submit = async () => {
         try {
-          const response = await fetch(process.env.VUE_APP_BACK_PATH + "emails", {
+          const response = await fetch(process.env.VUE_APP_BACK_PATH + "emails/" + this.code, {
             method: 'GET',
             headers: {
               'Content-Type': 'application/json',
@@ -106,7 +115,12 @@ export default {
     handleDel(){
       const submit = async () => {
         try {
-          const response = await fetch(process.env.VUE_APP_BACK_PATH + 'emails', {
+          if (!this.code) {
+            alert("Seleziona un numero prima di eliminare");
+            return;
+          }
+
+          const response = await fetch(process.env.VUE_APP_BACK_PATH + 'emails/' + this.code, {
             method: 'DELETE',
             headers: { 'Content-Type': 'application/json' },
           });
@@ -129,13 +143,24 @@ export default {
       };
       submit()
     },
+
+
     handleStart(){
       const submit = async () => {
         try {
-          const response = await fetch(process.env.VUE_APP_BACK_PATH + 'emails/send', {
-            method: 'GET',
-            headers: { 'Content-Type': 'application/json' },
-          });
+          let response;
+
+          if(this.selectedOption === '1') {
+            response = await fetch(process.env.VUE_APP_BACK_PATH + 'emails/sendLuogo/' + this.code, {
+              method: 'GET',
+              headers: {'Content-Type': 'application/json'},
+            });
+          } else if (this.selectedOption === '2') {
+            response = await fetch(process.env.VUE_APP_BACK_PATH + 'emails/sendPersona/' + this.code, {
+              method: 'GET',
+              headers: {'Content-Type': 'application/json'},
+            });
+          }
 
           if (!response.ok) {
             throw new Error('Failed to fetch data');
@@ -149,7 +174,14 @@ export default {
 
         } catch (error) {
           console.error('Error:', error);
-          alert('There was a problem starting the game.');
+          if(this.selectedOption === null){
+            alert('seleziona la categoria!')
+          }else if(this.code === ''){
+            alert('inserisci il codice partita!')
+          }else{
+            alert('There was a problem starting the game.');
+          }
+
         }
       };
       submit()
@@ -177,23 +209,46 @@ export default {
 
 <template>
   <div class="container">
-    <form class="my-form" @submit.prevent="handleSubmit(); handleList()">
-      <label>Email:</label>
-      <input type="email" v-model="email" />
 
-      <div class="submit">
-        <button type="submit">JOIN</button>
+    <div class="sidebar">
+      <h3>Seleziona una categoria</h3>
+      <label>
+        <input type="radio" name="option" v-model="selectedOption" value="1">
+        Luoghi
+      </label>
+      <label>
+        <input type="radio" name="option" v-model="selectedOption" value="2">
+        Persone Famose
+      </label>
+    </div>
+
+    <div class="separator"></div>
+
+    <div class="main-content">
+      <form class="my-form" @submit.prevent="handleSubmit(); handleList()">
+        <label>Email:</label>
+        <input type="email" v-model="email" />
+        <label>Codice Partita:</label>
+        <input type="code" v-model="code" :disabled="codeDisabled"/>
+
+        <div class="submit">
+          <button type="submit">JOIN</button>
+        </div>
+      </form>
+
+
+      <div>
+        <ul class="list-container">
+          <li v-for="(content, index) in contents" :key="content">{{content}}
+            <hr v-if="index !== contents.length - 1">
+          </li>
+        </ul>
+        <button class="players" @click="handleList">PLAYER LIST</button>
       </div>
-    </form>
+    </div>
 
-
-    <div>
-      <ul class="list-container">
-        <li v-for="(content, index) in contents" :key="content">{{content}}
-          <hr v-if="index !== contents.length - 1">
-        </li>
-      </ul>
-      <button class="players" @click="handleList">PLAYER LIST</button>
+    <div class="sidebar">
+      <!-- Empty or other content for the right sidebar if needed -->
     </div>
 
   </div>
@@ -201,10 +256,11 @@ export default {
   <button class="delete" @click="handleDel()">DELETE ALL EMAILS</button>
   <button class="start" @click="handleStart">START</button>
 
-  <p> ATTENZIONE: il gioco non funziona se è presente anche solo una mail che non appartiene ad alcun giocatore</p>
-  <p> come prima cosa è consigliabile eliminare tutte le email per pulire il database (pulsante rosso), tutti i giocatori devono inserire la propria email per giocare, è possibile inserire tutte le email da un solo dispositivo</p>
-  <p> non è possibile elimniare una sola mail dal database, in caso un giocatore smettesse di giocare è necessario eliminare tutte le email e reinserire quelle dei giocatori rimasti</p>
-
+  <p> ATTENZIONE: il gioco non funziona se nella partita è presente anche solo una mail che non appartiene ad alcun giocatore</p>
+  <p> tutti i giocatori devono inserire la propria email per giocare, il codice partita deve essere uguale per tutti i giocatori, è possibile inserire tutte le email da un solo dispositivo</p>
+  <p> non è possibile eliminare una sola mail dal database, in caso un giocatore smettesse di giocare è necessario eliminare tutte le email (o creare una nuova partita con un nuovo codice) e reinserire quelle dei giocatori rimasti</p>
+  <p> per iniziare la partita o eliminare tutte le mail dalla partita è necessario che sia presente il relativo codice </p>
+  <p> la lista dei giocatori si aggiorna ogni 20 secondi, volendo è possibile aggiornarla subito premendo il pulsante "player list"</p>
 
 </template>
 
@@ -225,6 +281,11 @@ export default {
   }
 }
 
+.separator {
+  width: 2px; /* Larghezza della linea verticale */
+  background-color: #ccc; /* Colore della linea verticale */
+  height: 40vh; /* Altezza della linea verticale (copre tutta la viewport) */
+}
 
 form{
   flex: 1;            /* Occupa 1 parte del layout */
@@ -273,13 +334,6 @@ button:hover{
   text-align: center;
 }
 
-
-.bravo{
-  color: darkorange;
-  margin-top: 10px;
-  font-size: 1.8em;
-  font-weight: bold;
-}
 .delete{
   background: firebrick;
   margin-bottom: 10px;
@@ -339,6 +393,25 @@ button:hover{
 .players:hover {
   background-color: #42b983;   /* Colore più scuro al passaggio del mouse */
 }
+
+.sidebar {
+  width: 20%;
+  padding: 10px;
+  display: flex;
+  flex-direction: column; /* Dispone gli elementi in una colonna */
+  gap: 10px; /* Spazio tra i radio button */
+}
+.sidebar label {
+  display: flex;
+  align-items: center; /* Allinea verticalmente i radio button con il testo */
+}
+
+
+.main-content {
+  width: 60%;
+  padding: 10px;
+}
+
 
 
 </style>

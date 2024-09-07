@@ -2,7 +2,7 @@
 <div id="app">
   <router-view/>
   <footer>
-    <p>Made by @mosearc</p>
+    <p>Made by @mosearc, find me on GitHub!</p>
   </footer>
 </div>
 </template>
