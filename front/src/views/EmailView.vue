@@ -10,7 +10,8 @@ export default {
       contents: [],
       intervalId: null,  // Per memorizzare l'ID dell'intervallo
       codeDisabled: false,
-      selectedOption: null
+      selectedOption: null,
+      number: 1,
 
     }
   },
@@ -146,19 +147,26 @@ export default {
 
 
     handleStart(){
+      console.log("numspie:"+this.number)
       const submit = async () => {
         try {
           let response;
 
           if(this.selectedOption === '1') {
-            response = await fetch(process.env.VUE_APP_BACK_PATH + 'emails/sendLuogo/' + this.code, {
+            response = await fetch(process.env.VUE_APP_BACK_PATH + 'emails/sendLuogo/' + this.code + `?numeronSpie=${this.number}`, {
               method: 'GET',
-              headers: {'Content-Type': 'application/json'},
+              headers: {
+                'Content-Type': 'application/json',
+                'numeroSpie': this.number,
+              },
             });
           } else if (this.selectedOption === '2') {
-            response = await fetch(process.env.VUE_APP_BACK_PATH + 'emails/sendPersona/' + this.code, {
+            response = await fetch(process.env.VUE_APP_BACK_PATH + 'emails/sendPersona/' + this.code + `?numeronSpie=${this.number}`, {
               method: 'GET',
-              headers: {'Content-Type': 'application/json'},
+              headers: {
+                'Content-Type': 'application/json',
+                'numeroSpie': this.number,
+              },
             });
           }
 
@@ -216,6 +224,7 @@ export default {
         <label>Codice Partita:</label>
         <input type="code" v-model="code" :disabled="codeDisabled"/>
 
+
         <div class="submit">
           <button type="submit">JOIN</button>
         </div>
@@ -242,9 +251,17 @@ export default {
       </label>
     </div>
 
+    <div>
+      <label>Numero Spie:</label>
+      <input v-model="number" type="number" placeholder="default 1" />
+    </div>
+
   </div>
 
+
+
   <button class="delete" @click="handleDel()">DELETE ALL EMAILS</button>
+
   <button class="start" @click="handleStart">START</button>
 
   <p> ATTENZIONE: il gioco non funziona se nella partita è presente anche solo una mail che non appartiene ad alcun giocatore</p>

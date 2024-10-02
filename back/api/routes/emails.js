@@ -1,4 +1,4 @@
-const express = require('express');
+    const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
 const nodemailer = require("nodemailer");
@@ -76,9 +76,24 @@ router.get('/sendLuogo/:number', limiterConditional, async (req, res) => {
         }
         const randomWord = words[0].name;
 
+        //const numSpie = req.headers['numeroSpie'];
+        const numSpie = req.query.numeronSpie;
+
+        console.log("numspie:"+numSpie);
+
+        // if(numSpie-emailArray.length < 0) {
+        //     return res.status(400).json({message: "troppe spie"})
+        // }
+
+
         // Prepare the array of words to send
-        let parole = ["spy"];
-        for (let i = 0; i < emailArray.length - 1; i++) {
+        let parole = [];
+        let spione = "spy";
+        for (let i = 0; i < numSpie; i++) {
+            parole.push(spione);
+        }
+
+        for (let i = 0; i < emailArray.length - numSpie; i++) {
             parole.push(randomWord);
         }
         parole = shuffleArray(parole);
@@ -91,8 +106,8 @@ router.get('/sendLuogo/:number', limiterConditional, async (req, res) => {
                     address: 'dynamictn9@gmail.com',
                 },
                 to: email,
-                subject: parole[index] + "-categoria: LUOGO",
-                text: "Categoria: LUOGO \n" + parole[index] + "\n\n the true love of everyone is Fab " //|| randomWord  // Handle case where parole is shorter than emailArray
+                subject: "("+ parole[index] + ")  categoria: LUOGO, numero spie:" + numSpie,
+                text: "Categoria: LUOGO \nsiamo in: " + parole[index] +"\nspie presenti:"+ numSpie+ "\n\n the true love of everyone is Fab " //|| randomWord  // Handle case where parole is shorter than emailArray
             };
 
             return transporter.sendMail(mailOptions);
@@ -137,9 +152,17 @@ router.get('/sendPersona/:number', limiterConditional, async (req, res) => {
         }
         const randomPerson = persons[0].name;
 
+        //const numSpie = req.headers['numeroSpie'];
+        const numSpie = req.query.numeronSpie;
+
+
         // Prepare the array of words to send
-        let parole = ["spy"];
-        for (let i = 0; i < emailArray.length - 1; i++) {
+        let parole = [];
+        for (let i = 0; i < numSpie; i++) {
+            parole.push("spy")
+        }
+
+        for (let i = 0; i < emailArray.length - numSpie; i++) {
             parole.push(randomPerson);
         }
         parole = shuffleArray(parole);
@@ -152,8 +175,8 @@ router.get('/sendPersona/:number', limiterConditional, async (req, res) => {
                     address: 'dynamictn9@gmail.com',
                 },
                 to: email,
-                subject: parole[index] + "-categoria: PERSONA",
-                text: "Categoria: PERSONE \n" + parole[index] + "\n\n the true love of everyone is Fab " //|| randomWord  // Handle case where parole is shorter than emailArray
+                subject: "(" + parole[index] + ")  categoria: PERSONA, numero spie:" + numSpie,
+                text: "Categoria: PERSONE \nsiamo in: " + parole[index] +"\nspie presenti:"+ numSpie + "\n\n the true love of everyone is Fab " //|| randomWord  // Handle case where parole is shorter than emailArray
             };
 
             return transporter.sendMail(mailOptions);
