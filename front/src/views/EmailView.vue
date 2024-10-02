@@ -152,6 +152,10 @@ export default {
         try {
           let response;
 
+          if(this.number <= 0){
+            this.number = 1;
+          }
+
           if(this.selectedOption === '1') {
             response = await fetch(process.env.VUE_APP_BACK_PATH + 'emails/sendLuogo/' + this.code + `?numeronSpie=${this.number}`, {
               method: 'GET',
