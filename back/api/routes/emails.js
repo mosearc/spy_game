@@ -176,7 +176,7 @@ router.get('/sendPersona/:number', limiterConditional, async (req, res) => {
                 },
                 to: email,
                 subject: "(" + parole[index] + ")  categoria: PERSONA, numero spie:" + numSpie,
-                text: "Categoria: PERSONE \nsiamo in: " + parole[index] +"\nspie presenti:"+ numSpie + "\n\n the true love of everyone is Fab " //|| randomWord  // Handle case where parole is shorter than emailArray
+                text: "Categoria: PERSONE \nla persona è: " + parole[index] +"\nspie presenti:"+ numSpie + "\n\n the true love of everyone is Fab " //|| randomWord  // Handle case where parole is shorter than emailArray
             };
 
             return transporter.sendMail(mailOptions);
