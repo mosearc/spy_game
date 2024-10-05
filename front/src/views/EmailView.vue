@@ -257,7 +257,7 @@ export default {
 
     <div>
       <label>Numero Spie:</label>
-      <input v-model="number" type="number" placeholder="default 1" />
+      <input v-model="number" type="number" min="1" placeholder="default 1" />
     </div>
 
   </div>
