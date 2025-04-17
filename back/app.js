@@ -9,6 +9,7 @@ require('dotenv').config()
 const emailRoutes = require('./api/routes/emails');
 const wordRoutes = require('./api/routes/words');
 const personRoutes = require('./api/routes/persons');
+const physicRoutes = require('./api/routes/physics');
 
 mongoose.connect('mongodb+srv://mosearcaro:' + process.env.MONGO_ATLAS_PW + '@node-spygame.m7yhj.mongodb.net/?retryWrites=true&w=majority&appName=node-spygame')
     .then(() => console.log('MongoDB connected...'))
@@ -33,5 +34,6 @@ app.use((req,res,next)=>{
 app.use('/emails', emailRoutes);
 app.use('/words', wordRoutes);
 app.use('/persons', personRoutes)
+app.use('/physics', physicRoutes)
 
 module.exports = app;

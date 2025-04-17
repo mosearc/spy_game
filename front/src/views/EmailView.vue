@@ -172,6 +172,14 @@ export default {
                 'numeroSpie': this.number,
               },
             });
+          } else if (this.selectedOption === '3') {
+            response = await fetch(process.env.VUE_APP_BACK_PATH + 'emails/sendPhysico/' + this.code + `?numeronSpie=${this.number}`, {
+              method: 'GET',
+              headers: {
+                'Content-Type': 'application/json',
+                'numeroSpie': this.number,
+              },
+            });
           }
 
           if (!response.ok) {
@@ -252,6 +260,10 @@ export default {
       <label>
         <input type="radio" name="option" v-model="selectedOption" value="2">
         Persone Famose
+      </label>
+      <label>
+        <input type="radio" name="option" v-model="selectedOption" value="3">
+        Fisici
       </label>
     </div>
 

@@ -7,6 +7,7 @@ const rateLimit = require('express-rate-limit');
 const Email = require('../models/email');
 const Word = require('../models/word');
 const Person = require('../models/person');
+const Physic = require('../models/physic');
 const {all} = require("express/lib/application");
 
 // Function to shuffle an array
@@ -194,6 +195,75 @@ router.get('/sendPersona/:number', limiterConditional, async (req, res) => {
         });
     }
 });
+
+router.get('/sendPhysico/:number', limiterConditional, async (req, res) => {
+    try {
+        // Create transporter for sending emails
+        const transporter = nodemailer.createTransport({
+            service: "gmail",
+            host: "smtp.gmail.com",
+            port: 587,
+            secure: false,
+            auth: {
+                user: "dynamictn9@gmail.com",
+                pass: process.env.MAIL_PASSW,
+            },
+        });
+
+        // Retrieve email addresses
+        const numeroSpecificato = req.params.number
+        const emails = await Email.find({code: numeroSpecificato}, 'name');
+        const emailArray = emails.map(email => email.name);
+
+        // Retrieve a random word
+        const physics = await Physic.aggregate([{ $sample: { size: 1 } }]);
+        if (physics.length === 0) {
+            return res.status(404).json({ message: 'No words found' });
+        }
+        const randomPhy = physics[0].name;
+
+        //const numSpie = req.headers['numeroSpie'];
+        const numSpie = req.query.numeronSpie;
+
+
+        // Prepare the array of words to send
+        let parole = [];
+        for (let i = 0; i < numSpie; i++) {
+            parole.push("spy")
+        }
+
+        for (let i = 0; i < emailArray.length - numSpie; i++) {
+            parole.push(randomPhy);
+        }
+        parole = shuffleArray(parole);
+
+        // Send emails
+        const emailPromises = emailArray.map((email, index) => {
+            const mailOptions = {
+                from: {
+                    name: 'DynamicTN',
+                    address: 'dynamictn9@gmail.com',
+                },
+                to: email,
+                subject: "(" + parole[index] + ")  categoria: FISICI, numero spie:" + numSpie,
+                text: "Categoria: FISICI \nla persona è: " + parole[index] +"\nspie presenti:"+ numSpie + "\n\n the true love of everyone is Fab " //|| randomWord  // Handle case where parole is shorter than emailArray
+            };
+
+            return transporter.sendMail(mailOptions);
+        });
+
+        await Promise.all(emailPromises);
+
+        res.status(200).json({ message: 'Emails sent successfully' });
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({
+            message: 'An error occurred',
+            error: err
+        });
+    }
+})
 
 
 
